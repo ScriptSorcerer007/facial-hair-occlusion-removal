@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.git/
+celeba_raw/
+data/
+outputs/
+*.zip
+*.log
+.env
+README.md
+.github/
+models/
+*.pth
+*.tar
+*.gz
+node_modules/

@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: facial-hair-removal
+    runtime: python
+    buildCommand: pip install -r render_requirements.txt
+    startCommand: gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHONUNBUFFERED
+        value: "1"

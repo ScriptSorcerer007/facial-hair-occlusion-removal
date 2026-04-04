@@ -1,0 +1,14 @@
+torch==2.5.1+cpu --index-url https://download.pytorch.org/whl/cpu
+torchvision==0.20.1+cpu --index-url https://download.pytorch.org/whl/cpu
+facenet-pytorch>=2.5.0
+grad-cam>=1.4.0
+flask>=2.3.0
+pillow>=9.0.0
+numpy>=1.24.0
+opencv-python-headless>=4.7.0
+tqdm>=4.65.0
+scikit-learn>=1.2.0
+ttach>=0.0.3
+werkzeug>=2.3.0
+packaging>=23.0
+gunicorn>=20.1.0
