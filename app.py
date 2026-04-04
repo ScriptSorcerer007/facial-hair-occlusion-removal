@@ -16,6 +16,10 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ── Load model ────────────────────────────────────────────────────────────────
 def load_latest_model():
+    if not os.path.exists("models"):
+        os.makedirs("models", exist_ok=True)
+        print("No models folder found - running without model")
+        return None
     checkpoints = [f for f in os.listdir("models")
                    if f.startswith("generator") and f.endswith(".pth")]
     if not checkpoints:
@@ -364,4 +368,4 @@ def health():
 if __name__ == "__main__":
     print(f"Device: {DEVICE}")
     print("Starting FaceClean AI at http://127.0.0.1:5000")
-    app.run(debug=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
