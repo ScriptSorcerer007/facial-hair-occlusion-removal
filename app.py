@@ -4,7 +4,7 @@ import torchvision.transforms as transforms
 from torchvision.utils import save_image
 from PIL import Image
 from utils.model import UNetGenerator
-import os, io, base64
+import os, io, base64, gdown
 import numpy as np
 
 app = Flask(__name__)
@@ -15,21 +15,41 @@ OUTPUT_DIR = "outputs/webapp"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ── Load model ────────────────────────────────────────────────────────────────
+GDRIVE_FILE_ID = "1El9nkR1Mac7s3B4ijumqN92eh58oyp-K"
+MODEL_PATH     = "models/generator_epoch50.pth"
+
+def download_model_if_needed():
+    os.makedirs("models", exist_ok=True)
+    if not os.path.exists(MODEL_PATH):
+        print("Downloading model from Google Drive...")
+        try:
+            gdown.download(
+                f"https://drive.google.com/uc?id={GDRIVE_FILE_ID}",
+                MODEL_PATH,
+                quiet=False
+            )
+            print("Model downloaded!")
+            return True
+        except Exception as e:
+            print(f"Download failed: {e}")
+            return False
+    return True
+
 def load_latest_model():
-    if not os.path.exists("models"):
-        os.makedirs("models", exist_ok=True)
-        print("No models folder found - running without model")
+    download_model_if_needed()
+    if not os.path.exists(MODEL_PATH):
+        print("No model found!")
         return None
-    checkpoints = [f for f in os.listdir("models")
-                   if f.startswith("generator") and f.endswith(".pth")]
-    if not checkpoints:
+    try:
+        model = UNetGenerator().to(DEVICE)
+        model.load_state_dict(torch.load(MODEL_PATH,
+                              map_location=DEVICE))
+        model.eval()
+        print("Model loaded successfully!")
+        return model
+    except Exception as e:
+        print(f"Model load error: {e}")
         return None
-    latest = sorted(checkpoints)[-1]
-    model  = UNetGenerator().to(DEVICE)
-    model.load_state_dict(torch.load(f"models/{latest}", map_location=DEVICE))
-    model.eval()
-    print(f"Loaded: {latest}")
-    return model
 
 generator = load_latest_model()
 
